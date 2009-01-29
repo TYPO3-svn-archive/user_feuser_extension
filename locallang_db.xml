@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+    <meta type="array">
+        <type>database</type>
+        <description>Language labels for database tables/fields belonging to extension 'user_feuser_extension'</description>
+    </meta>
+    <data type="array">
+        <languageKey index="default" type="array">
+        	<label index="tt_content.list_type_pi2">Improved registration form with categories</label>
+            <label index="sys_dmail_category.user_feuserextension_description">Description</label>
+            <label index="sys_dmail_category.user_feuserextension_parent">Parent category</label>
+            <label index="sys_dmail_category.user_feuserextension_order">Order in the liste</label>
+            <label index="tt_content.list_type">Front End User Registration</label>
+            <label index="tt_content.pi1_flexform.display_mode">Display mode</label>
+            <label index="tt_content.pi1_flexform.display_mode.1">Default</label>
+            <label index="tt_content.pi1_flexform.display_mode.3">Create</label>
+	    	<label index="tt_content.pi1_flexform.display_mode.4">Delete</label>
+            <label index="tt_content.pi1_flexform.display_mode.5">Invite</label>
+            <label index="tt_content.pi1_flexform.display_mode.7">Edit</label>
+	    	<label index="tt_content.pi1_flexform.display_mode.8">Setfixed</label>
+	    	<label index="tt_content.pi1_flexform.display_mode.9">Infomail</label>
+        </languageKey>
+    </data>
+</T3locallang>

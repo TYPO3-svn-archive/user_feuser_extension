@@ -1,0 +1,9 @@
+
+## $Id: constants.txt 12065 2008-09-17 17:31:39Z franzholz $
+
+
+plugin.tx_userfeuserextension_pi2 {
+    # cat=plugin.tx_userfeuserextension_pi2/file; type=file[css]; label= HTML emails stylesheet: If HTML emails are enabled, this file contains the CSS stylesheet to be incorporated in these mails.
+  HTMLMailCSS = EXT:user_feuser_extension/pi2/tx_srfeuserregister_htmlmail_xhtml.css
+
+}

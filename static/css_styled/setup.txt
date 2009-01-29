@@ -1,0 +1,48 @@
+##
+## @package TYPO3
+## @subpackage sr_feuser_register
+## @version $Id: setup.txt 12285 2008-09-24 21:06:39Z franzholz $
+##user-feuserextension-pi2-multiple-checkboxes
+
+plugin.user_srfeuserextension_pi2 = USER_INT
+plugin.user_srfeuserextension_pi2 {
+
+	_CSS_DEFAULT_STYLE (
+		.user-feuserextension-pi2 p { margin-top: .5em; margin-bottom: 0; padding: 0 .3em; text-indent: 0; }
+		.user-feuserextension-pi2 h4 { margin-top: 0; padding-left: .3em; }
+		.user-feuserextension-pi2 legend { padding: 0 .5em; font-weight: bold; }
+		.user-feuserextension-pi2 .user-feuserextension-pi2-notice { font-style: italic; margin-bottom: 1em; }
+		.user-feuserextension-pi2 .user-feuserextension-pi2-trash { margin-bottom: 2em; }
+		.user-feuserextension-pi2 a { padding-left: 14px; background-image: url("../typo3conf/ext/sr_feuser_register/pi1/internal_link.gif"); background-repeat: no-repeat; background-position: 0% 60%; text-decoration:none; }
+		.user-feuserextension-pi2 label { margin: 0; padding: 0; }
+		.user-feuserextension-pi2 label span { color: #ff0000; }
+		.user-feuserextension-pi2 .user-feuserextension-pi2-error { color: #ff0000; }
+		.user-feuserextension-pi2 input { margin: 0; padding: 0 .5em 0 0; }
+		.user-feuserextension-pi2 input[type=password] { margin-right: 1em; }
+		* html .user-feuserextension-pi2 input.user-feuserextension-pi2-password { margin-right: 1em; }
+		.user-feuserextension-pi2 input[type=radio], .user-feuserextension-pi2 input[type=checkbox] { background-color: transparent; }
+		* html .user-feuserextension-pi2 input.user-feuserextension-pi2-radio, * html .user-feuserextension-pi2 input.user-feuserextension-pi2-checkbox { background-color: transparent; }		
+		.user-feuserextension-pi2 .user-feuserextension-pi2-delete-icon { margin-left: 1em; background-color: transparent; }
+		.user-feuserextension-pi2 .user-feuserextension-pi2-delete-icon:hover { cursor: pointer; }
+		.user-feuserextension-pi2 a.user-feuserextension-pi2-file-view { padding-left: 15px; background-image: url("../typo3conf/ext/sr_feuser_register/pi1/internal_link_new_window.gif"); background-color: transparent; background-repeat: no-repeat; font-size: .8em; margin-left: 1em; }
+		.user-feuserextension-pi2 ul { margin: 0; padding: 0; list-style-position: inside; }
+		.user-feuserextension-pi2 ul.tx-srfeuserregister-multiple-checkboxes { list-style-type: none; }
+		.user-feuserextension-pi2 ul.tx-srfeuserregister-multiple-checkboxes li { margin: 0 0 .3em 0; padding: 0; }
+		.user-feuserextension-pi2 ul.tx-srfeuserregister-multiple-checkboxes li label { margin: 0; padding: 0 0 0 .5em; }
+		.user-feuserextension-pi2 ul.tx-srfeuserregister-multiple-checked-values li { float: left; padding: 0 2em 0 0; margin: 0; }
+		.user-feuserextension-pi2 dl { margin: 0; padding: 1em 0 0 0; }
+		.user-feuserextension-pi2 dt, .user-feuserextension-pi2 dd { margin: 0; padding: 0 0 .5em 0; float: left; }
+		.user-feuserextension-pi2 dt { clear: both; width: 25%; text-align: right; padding-right: 1em; }
+		.user-feuserextension-pi2 dd { text-align: left; width: 50%; }
+		.user-feuserextension-pi2 .user-feuserextension-pi2-multiple-checkboxes dt { width: auto; padding-right: 0; }
+		.user-feuserextension-pi2 .user-feuserextension-pi2-multiple-checkboxes dd { width: auto; }
+		* html .user-feuserextension-pi2 dd { float: none; }
+		.user-feuserextension-pi2 dd p { margin-top: 0; margin-bottom: .5em; padding: 0; }
+		.user-feuserextension-pi2 dd label { padding: 0 1em 0 .5em; }
+		
+		.ext-level2 { margin-left: 20px !important;}
+	)
+
+	_DEFAULT_PI_VARS {
+	}
+}

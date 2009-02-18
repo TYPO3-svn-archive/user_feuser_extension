@@ -25,7 +25,7 @@ require_once(t3lib_extMgm::extPath('sr_feuser_register').'lib/class.tx_srfeuserr
 
 class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 	
-	function createChild(&$row2, &$colConfig,  $whereClause, &$colContent, &$titleText, &$valuesArray, &$titleField) {
+	function createChild(&$row2, &$colConfig,  $whereClause, &$colContent, &$titleText, &$valuesArray, &$titleField, $theTable, $colName) {
 		global $TYPO3_DB, $TCA, $TSFE;
 		$searchString = 'AND user_feuserextension_parent=0';
 		$replaceString =  'AND user_feuserextension_parent='.$row2['uid'].' ';
@@ -433,7 +433,7 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 												<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" title="'.$row2['user_feuserextension_description'].'" class="parent_'.$row2['user_feuserextension_parent'].'">'.$titleText.'</label></dd>';
 												
 												/* ac 12.2008 */
-												$colContent .= $this->createChild($row2, $colConfig, $whereClause, $colContent, $titleText, $valuesArray, $titleField);
+												$colContent .= $this->createChild($row2, $colConfig, $whereClause, $colContent, $titleText, $valuesArray, $titleField, $theTable, $colName);
 												
 											} else {
 												$colContent .= '<option value="'.$row2['uid'].'"' . (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$titleText.'</option>';

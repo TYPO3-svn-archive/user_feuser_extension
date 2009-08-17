@@ -21,6 +21,11 @@
 *
 *  This copyright notice MUST APPEAR in all copies of the script!
 ***************************************************************/
+/** 
+*
+* This file is inspirate by file in [sr_feuser_register folder]/lib/class.tx_srfeuserregister_tca.php
+* 
+**/
 require_once(t3lib_extMgm::extPath('sr_feuser_register').'lib/class.tx_srfeuserregister_tca.php');
 
 class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
@@ -66,8 +71,13 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 				}
 				$titleText = htmlspecialchars($row3[$titleField],ENT_QUOTES,$charset);
 				if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-					$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . ' ext-level2" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row3['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row3['uid']. ']" value="'.$row3['uid'].'" type="checkbox"' . (in_array($row3['uid'], $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
-					<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row3['uid'] .'" title="'.$row3['user_feuserextension_description'].'" class="level2">'.$titleText.'</label></dd>';
+					if ($row3['user_feuserextension_press']>0)  {
+						$press = ' class="press" style="display:none;"';
+					} else {
+						$press = ' class="public"';
+					}
+					$colContent .= '<dt'.$press.'><input class="' . $this->pibase->pi_getClassName('checkbox') . ' ext-level2" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row3['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row3['uid']. ']" value="'.$row3['uid'].'" type="checkbox"' . (in_array($row3['uid'], $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
+					<dd'.$press.'><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row3['uid'] .'" title="'.$row3['user_feuserextension_description'].'" class="level2">'.$titleText.'</label></dd>';
 				} else {
 					$colContent .= '<option value="'.$row3['uid'].'"' . (in_array($row3['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$titleText.'</option>';
 				}
@@ -78,9 +88,8 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 		
 	function addTcaMarkers(&$markerArray, $row, $origRow, $cmd, $cmdKey, $theTable, $viewOnly=false, $activity='', $bChangesOnly=false) {
 		//$markerArray['###TCA_INPUT_'.$colName.'###'] = "blabla";
-		//t3lib_div::debug('blabla');
 		global $TYPO3_DB, $TCA, $TSFE;
-		
+		//t3lib_div::debug($this->TCA['columns']);
 		$charset = $TSFE->renderCharset;
 		$mode = $this->controlData->getMode();
 		$tablesObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_tables');
@@ -149,7 +158,7 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 									$this->cObj->alternativeData = $colConfig['items'];
 									$colContent = $this->cObj->stdWrap($colContent,$listWrap);
 								} else {
-									$colContent = $mrow[$colName]?htmlspecialchars($this->langObj->pi_getLL('yes'),ENT_QUOTES,$charset):htmlspecialchars($this->langObj->pi_getLL('no'),ENT_QUOTES,$charset);
+									$colContent = $mrow[$colName]?htmlspecialchars($this->langObj->getLL('yes'),ENT_QUOTES,$charset):htmlspecialchars($this->langObj->getLL('no'),ENT_QUOTES,$charset);
 								}
 								break;
 							case 'radio':
@@ -242,6 +251,7 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 
 												if ($theTable == 'fe_users' && $colName == 'usergroup') {
 													$row2 = $this->getUsergroupOverlay($row2);
+													//t3lib_div::debug($row2);
 												} else if ($localizedRow = $TSFE->sys_page->getRecordOverlay($colConfig['foreign_table'], $row2, $this->controlData->sys_language_content)) {
 													$row2 = $localizedRow;
 												}
@@ -255,7 +265,7 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 								break;
 							default:
 								// unsupported input type
-								$colContent .= $colConfig['type'].':'.htmlspecialchars($this->langObj->pi_getLL('unsupported'),ENT_QUOTES,$charset);
+								$colContent .= $colConfig['type'].':'.htmlspecialchars($this->langObj->getLL('unsupported'),ENT_QUOTES,$charset);
 								break;
 						}
 					} else {
@@ -284,7 +294,7 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 									'>'.($colConfig['default']?$label:'').'</textarea>';
 								break;
 							case 'check':
-								$label = $this->langObj->pi_getLL('tooltip_' . $colName);
+								$label = $this->langObj->getLL('tooltip_' . $colName);
 								$label = htmlspecialchars($label,ENT_QUOTES,$charset);
 								if (is_array($colConfig['items'])) {
 									$uidText = $this->pibase->pi_getClassName($colName).'-'.$mrow['uid'];
@@ -345,7 +355,8 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 									$colContent .='
 											<dl class="' . $this->pibase->pi_getClassName('multiple-checkboxes') . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
 								} else {
-									$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###">';
+									/** anc 26 may 09 */
+									$colContent .= '<select id="'. $this->pibase->pi_getClassName($colName) . '" name="FE['.$theTable.']['.$colName.']' . $multiple . '" title="###TOOLTIP_' . (($cmd == 'invite')?'INVITATION_':'') . $this->cObj->caseshift($colName,'upper').'###"'.(($this->pibase->pi_getClassName($colName)=='user-feuserextension-pi2-usergroup')?' onChange="pressOrNotPress(this);':'').'">';
 								}
 								$textSchema = $theTable.'.'.$colName.'.I.';
 								$itemArray = $this->langObj->getItemsLL($textSchema, true);
@@ -394,6 +405,7 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 										$whereClause .= ' AND sys_dmail_category.pid IN (' . $TYPO3_DB->fullQuoteStr($this->conf['module_sys_dmail_category_PIDLIST'], 'sys_dmail_category') . ')'.' AND sys_language_uid='.$this->controlData->sys_language_content.' AND user_feuserextension_parent=0';
 										/* config the order by */
 										$TCA[$colConfig['foreign_table']]['ctrl']['sortby']=user_feuserextension_order;
+										
 									}
 									$whereClause .= $this->cObj->enableFields($colConfig['foreign_table']);
 									$res = $TYPO3_DB->exec_SELECTquery('*', $colConfig['foreign_table'], $whereClause, '', $TCA[$colConfig['foreign_table']]['ctrl']['sortby']);
@@ -417,10 +429,20 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 												}
 												$selectedValue = $selected ? true: $selectedValue;
 												if ($colConfig['renderMode'] == 'checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-													$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid'].'"]" value="'.$row2['uid'].'" type="checkbox"' . ($selected ? ' checked="checked"':'') . ' /></dt>
+													$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid'].'"]" value="'.$row2['uid'].'" type="checkbox"' . ($selected ? ' checked="checked"':'') . '  /></dt>
 													<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'">'.$titleText.'</label></dd>';
 												} else {
-													$colContent .= '<option value="'.$row2['uid'].'"' . $selected . '>'.$titleText.'</option>';
+													/** anc 25 may 09 */
+													if ($titleText=='Public') {
+														$selected=' selected="selected"';
+													} else {
+														$selected='';
+													};
+													/** anc 4 jun 09 */
+													if ($titleText=='Public' xor $titleText=='Press') {
+														$colContent .= '<option value="'.$row2['uid'].'"' . $selected . '>'.$titleText.'</option>';
+													}
+													//t3lib_div::debug($titleText);
 												}
 											}
 										} else {
@@ -429,11 +451,18 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 											}
 											$titleText = htmlspecialchars($row2[$titleField],ENT_QUOTES,$charset);
 											if ($colConfig['renderMode']=='checkbox' && $this->conf['templateStyle'] == 'css-styled')	{
-												$colContent .= '<dt><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid']. ']" value="'.$row2['uid'].'" type="checkbox"' . (in_array($row2['uid'], $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
-												<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" title="'.$row2['user_feuserextension_description'].'" class="parent_'.$row2['user_feuserextension_parent'].'">'.$titleText.'</label></dd>';
+												/** anc */
+												if ($row2['user_feuserextension_press']>0)  {
+													$press = ' class="press" style="display:none;"';
+												} else {
+													$press = ' class="public"';
+												}
+												$colContent .= '<dt'.$press.'><input class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid']. ']" value="'.$row2['uid'].'" type="checkbox"' . (in_array($row2['uid'], $valuesArray) ? ' checked="checked"' : '') . ' /></dt>
+												<dd'.$press.'><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" title="'.$row2['user_feuserextension_description'].'" class="parent_'.$row2['user_feuserextension_parent'].'">'.$titleText.'</label></dd>';
 												
 												/* ac 12.2008 */
 												$colContent .= $this->createChild($row2, $colConfig, $whereClause, $colContent, $titleText, $valuesArray, $titleField, $theTable, $colName);
+												
 												
 											} else {
 												$colContent .= '<option value="'.$row2['uid'].'"' . (in_array($row2['uid'], $valuesArray) ? 'selected="selected"' : '') . '>'.$titleText.'</option>';
@@ -448,7 +477,7 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 								}
 								break;
 							default:
-								$colContent .= $colConfig['type'].':'.$this->langObj->pi_getLL('unsupported');
+								$colContent .= $colConfig['type'].':'.$this->langObj->getLL('unsupported');
 								break;
 						}
 					}

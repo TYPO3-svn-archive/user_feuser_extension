@@ -41,6 +41,14 @@ class user_feuserextension_pi2 extends tslib_pibase {
 	var $extKey        = 'user_feuser_extension';	// The extension key.
 	// var $pi_checkCHash = true;
 	
+	function incJsFile($script) {
+	
+		$js .= '<script src="'.t3lib_extMgm::siteRelPath($this->extKey).'js/'.$script.'.js" type="text/javascript"><!-- //--></script>';
+		
+		$GLOBALS['TSFE']->additionalHeaderData[$this->extKey] .= $js;
+	
+	}
+	
 	/**
 	 * The main method of the PlugIn
 	 *
@@ -51,12 +59,17 @@ class user_feuserextension_pi2 extends tslib_pibase {
 	function main($content, &$conf) {
 		global $TSFE;
 
+		$this->incJsFile('pi2');
+		
 		$this->pi_setPiVarDefaults();
 		$this->conf = &$conf;
 
 		$mainObj = &t3lib_div::getUserObj('&tx_srfeuserregister_control_main');
 		$mainObj->cObj = &$this->cObj;
 		$content = &$mainObj->main($content, $conf, $this, 'fe_users');
+		/** anc 23 june 09 force to not use md5 function*/
+		$GLOBALS['TSFE']->additionalHeaderData['MD5_script']='';
+		//t3lib_div::debug($GLOBALS['TSFE']->additionalHeaderData);
 		return $content;
 	}	
 }

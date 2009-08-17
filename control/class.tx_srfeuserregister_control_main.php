@@ -2,8 +2,8 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 1999-2003 Kasper SkÃ¥rhÃ¸j <kasperYYYY@typo3.com>
-*  (c) 2004-2008 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
+*  (c) 1999-2003 Kasper Skårhøj <kasperYYYY@typo3.com>
+*  (c) 2004-2009 Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca)>
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -29,12 +29,12 @@
  * Front End creating/editing/deleting records authenticated by fe_user login.
  * A variant restricted to front end user self-registration and profile maintenance, with a number of enhancements (see the manual).
  *
- * $Id: class.tx_srfeuserregister_control_main.php 12065 2008-09-17 17:31:39Z franzholz $
- * 
- * @author	Kasper SkÃ¥rhÃ¸j <kasperYYYY@typo3.com>
+ * $Id: class.tx_srfeuserregister_control_main.php 20265 2009-05-13 11:34:18Z franzholz $
+ *
+ * @author	Kasper Skårhøj <kasperYYYY@typo3.com>
  * @author	Stanislas Rolland <stanislas.rolland(arobas)sjbr.ca>
- * @author	Franz Holzinger <contact@fholzinger.com>
- * @maintainer	Franz Holzinger <contact@fholzinger.com> 
+ * @author	Franz Holzinger <franz@ttproducts.de>
+ * @maintainer	Franz Holzinger <franz@ttproducts.de>
  *
  *
  */
@@ -45,6 +45,7 @@ require_once(PATH_t3lib.'class.t3lib_page.php');
 	// For translating items from other extensions
 // require_once (t3lib_extMgm::extPath('lang').'lang.php');
 
+require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
 require_once(PATH_BE_srfeuserregister.'pi1/class.tx_srfeuserregister_pi1_urlvalidator.php');
 require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_control.php');
 require_once(PATH_BE_srfeuserregister.'control/class.tx_srfeuserregister_setfixed.php');
@@ -54,7 +55,7 @@ require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_email.php')
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_lang.php');
 require_once(PATH_BE_srfeuserregister.'lib/class.tx_srfeuserregister_passwordmd5.php');
 
-// Here the changes
+/** anc 19 june 2009, this line under this comment is differan than the original file*/
 require_once(PATH_user_feuserextension.'pi2/class.tx_srfeuserregister_tca.php');
 require_once(PATH_BE_srfeuserregister.'marker/class.tx_srfeuserregister_marker.php');
 require_once(PATH_BE_srfeuserregister.'model/class.tx_srfeuserregister_url.php');
@@ -82,8 +83,9 @@ class tx_srfeuserregister_control_main {
 	var $tca;  // object of type tx_srfeuserregister_tca
 	var $marker; // object of type tx_srfeuserregister_marker
 	var $pibaseObj;
+	var $extKey;
 
-	function main(
+	function main (
 		$content,
 		&$conf,
 		&$pibaseObj,
@@ -95,6 +97,7 @@ class tx_srfeuserregister_control_main {
 		global $TSFE;
 
 		$this->pibaseObj = &$pibaseObj;
+		$this->extKey = $this->pibaseObj->extKey;
 		$rc = $this->init($conf,$theTable,$adminFieldList,$buttonLabelsList,$otherLabelsList);
 		if ($rc !== FALSE)	{
 			$error_message = '';
@@ -112,29 +115,25 @@ class tx_srfeuserregister_control_main {
 	*
 	* @return void
 	*/
-	function init(&$conf, $theTable, $adminFieldList,$buttonLabelsList,$otherLabelsList) {
+	function init (&$conf, $theTable, $adminFieldList,$buttonLabelsList,$otherLabelsList) {
 		global $TSFE, $TCA;
 
 			// plugin initialization
 		$this->conf = &$conf;
 
+		$fe = t3lib_div::_GP('FE');
+
 		if (isset($conf['table.']) && is_array($conf['table.']) && $conf['table.']['name'])	{
 			$theTable  = $conf['table.']['name'];
 		}
 		$this->controlData = &t3lib_div::getUserObj('&tx_srfeuserregister_controldata');
-		$this->controlData->init($conf, $this->pibaseObj->prefixId, $this->pibaseObj->extKey, $this->pibaseObj->piVars, $theTable);
+		$this->controlData->init($conf, $this->pibaseObj->prefixId, $this->extKey, $this->pibaseObj->piVars, $theTable);
 
 		if ($this->extKey != SR_FEUSER_REGISTER_EXTkey)	{
-			if (t3lib_extMgm::isLoaded(DIV2007_EXTkey)) {
+
 					// Static Methods for Extensions for fetching the texts of sr_feuser_register
-				require_once(PATH_BE_div2007.'class.tx_div2007_alpha.php');
 				tx_div2007_alpha::loadLL_fh001($this->pibaseObj,'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/pi1/locallang.xml',FALSE);
-			} else if (t3lib_extMgm::isLoaded(FH_LIBRARY_EXTkey)) {
-					// FE BE library for flexform functions
-				require_once(PATH_BE_fh_library.'lib/class.tx_fhlibrary_language.php');
-				tx_fhlibrary_language::pi_loadLL($this->pibaseObj,'EXT:'.SR_FEUSER_REGISTER_EXTkey.'/pi1/locallang.xml',FALSE);
-			} // otherwise the labels from sr_feuser_register will not be included
-		}
+		} // otherwise the labels from sr_feuser_register need not be included, because this has been done in
 
 		if (t3lib_extMgm::isLoaded(STATIC_INFO_TABLES_EXTkey)) {
 			include_once(PATH_BE_static_info_tables.'pi1/class.tx_staticinfotables_pi1.php');
@@ -145,8 +144,6 @@ class tx_srfeuserregister_control_main {
 				$staticInfoObj->init();
 			}
 		}
-		
-		$this->cObj->data['pi_flexform'];
 
 		$confObj = &t3lib_div::getUserObj('&tx_srfeuserregister_lib_conf');
 		$confObj->init($conf);
@@ -155,6 +152,7 @@ class tx_srfeuserregister_control_main {
 		$this->data = &t3lib_div::getUserObj('&tx_srfeuserregister_data');
 		$authObj = &t3lib_div::getUserObj('&tx_srfeuserregister_auth');
 		$this->marker = &t3lib_div::getUserObj('&tx_srfeuserregister_marker');
+		/** anc 19 june 2009, this line under this comment is differan than the original file*/
 		$this->tca = &t3lib_div::getUserObj('&tx_user_feuserextension_tca');
 		$this->display = &t3lib_div::getUserObj('&tx_srfeuserregister_display');
 		$this->setfixedObj = &t3lib_div::getUserObj('&tx_srfeuserregister_setfixed');
@@ -166,12 +164,12 @@ class tx_srfeuserregister_control_main {
 
 		$this->urlObj->init ($this->controlData, $this->cObj);
 		$this->langObj->init($this->pibaseObj, $this->conf, $this->LLkey);
-		$rc = $this->langObj->pi_loadLL();
+		$rc = $this->langObj->loadLL();
 		if ($rc !== FALSE)	{
-			$this->tca->init($this->pibaseObj, $this->conf, $this->controlData, $this->langObj, $this->extKey);
+			$this->tca->init($this->pibaseObj, $this->conf, $this->controlData, $this->langObj, $this->extKey, $theTable);
 			$this->control->init($this->pibaseObj, $this->controlData, $this->display, $this->marker, $this->email, $this->tca, $this->setfixedObj);
-			$this->data->init($this->pibaseObj, $this->conf, $this->config,$this->langObj, $this->tca, $this->control, $theTable, $adminFieldList, $this->controlData);
-			$this->control->init2($this->controlData, $this->data);
+			$this->data->init($this->pibaseObj, $this->conf, $this->config,$this->langObj, $this->tca, $this->control, $theTable, $this->controlData);
+			$this->control->init2($theTable, $this->controlData, $this->data, $adminFieldList);
 
 			$md5Obj = &t3lib_div::getUserObj('&tx_srfeuserregister_passwordmd5');
 			$md5Obj->init ($this->marker, $this->data, $this->controlData);
@@ -188,7 +186,7 @@ class tx_srfeuserregister_control_main {
 				$this->marker->setOtherLabelsList($otherLabelsList);
 			}
 
-			$this->display->init($this->pibaseObj, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control);
+			$this->display->init($this->cObj, $this->conf, $this->config, $this->data, $this->marker, $this->tca, $this->control);
 			$this->email->init($this->pibaseObj, $this->conf, $this->config, $this->display, $this->data, $this->marker, $this->tca, $this->controlData, $this->setfixedObj);
 			$this->setfixedObj->init($this->cObj, $this->conf, $this->config, $this->controlData, $this->tca, $this->display, $this->email, $this->marker);
 		}

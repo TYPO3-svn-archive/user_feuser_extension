@@ -1,5 +1,8 @@
-(add new changes on top of this file)
-
+19-06-09 Antoine CATHELIN  <anc@wcc-coe.org>
+0.0.7 	make compatibility with sr_feuser_extension 2.5.22
+04-06-09 Antoine CATHELIN  <anc@wcc-coe.org>
+0.0.6 	include javascript for switch between usergroup Press and Public
+			block usergroup to only Press and Public
 08-12-01 Antoine CATHELIN  <anc@wcc-coe.org>
 
 	* Initial release

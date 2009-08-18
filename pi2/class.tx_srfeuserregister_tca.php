@@ -432,17 +432,20 @@ class tx_user_feuserextension_tca extends tx_srfeuserregister_tca {
 													$colContent .= '<dt><input  class="' . $this->pibase->pi_getClassName('checkbox') . '" id="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'" name="FE['.$theTable.']['.$colName.']['.$row2['uid'].'"]" value="'.$row2['uid'].'" type="checkbox"' . ($selected ? ' checked="checked"':'') . '  /></dt>
 													<dd><label for="'. $this->pibase->pi_getClassName($colName) . '-' . $row2['uid'] .'">'.$titleText.'</label></dd>';
 												} else {
-													/** anc 25 may 09 */
-													if ($titleText=='Public') {
+													$extconf=unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['user_feuser_extension']);
+													
+													/** anc 17 aout 09 */
+													if ($extconf['grppublic']==$row2['uid']) {
 														$selected=' selected="selected"';
+														$optValue='1';
 													} else {
 														$selected='';
+														$optValue='2';
 													};
-													/** anc 4 jun 09 */
-													if ($titleText=='Public' xor $titleText=='Press') {
-														$colContent .= '<option value="'.$row2['uid'].'"' . $selected . '>'.$titleText.'</option>';
+													/** anc 17 aout 09 */
+													if ($extconf['grppublic']==$row2['uid'] xor $extconf['grppress']==$row2['uid']) {
+														$colContent .= '<option value="'.$optValue.'"' . $selected . '>'.$titleText.'</option>';
 													}
-													//t3lib_div::debug($titleText);
 												}
 											}
 										} else {

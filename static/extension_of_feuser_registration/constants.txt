@@ -1,1 +1,1 @@
-plugin.tx_srfeuserregister_pi1.file.templateFile = typo3conf/ext/user_feuser_extension/pi2/tx_srfeuserregister_pi1_css_tmpl.html
+plugin.tx_srfeuserregister_pi1.file.templateFile = EXT:user_feuser_extension/pi2/tx_srfeuserregister_pi1_css_tmpl.html

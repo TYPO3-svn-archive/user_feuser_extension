@@ -1,5 +1,9 @@
 # Typoscript for the user extension of fe user registration
+
 # This includes parameters from the regular plugin into our extension
+
 plugin.user_feuserextension_pi2 < plugin.tx_srfeuserregister_pi1
-plugin.user_feuserextension_pi2.includeLibs = typo3conf/ext/user_feuser_extension/pi2/class.user_feuserextension_pi2.php
+
+plugin.user_feuserextension_pi2.includeLibs = EXT:user_feuser_extension/pi2/class.user_feuserextension_pi2.php
+
 plugin.user_feuserextension_pi2.userFunc = user_feuserextension_pi2->main

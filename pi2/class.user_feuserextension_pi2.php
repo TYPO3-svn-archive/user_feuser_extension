@@ -43,7 +43,7 @@ class user_feuserextension_pi2 extends tslib_pibase {
 	
 	function incJsFile($script) {
 	
-		$js .= '<script src="'.t3lib_extMgm::siteRelPath($this->extKey).'js/'.$script.'.js" type="text/javascript"><!-- //--></script>';
+		$js .= '<script src="/'.t3lib_extMgm::siteRelPath($this->extKey).'js/'.$script.'.js" type="text/javascript"><!-- //--></script>';
 		
 		$GLOBALS['TSFE']->additionalHeaderData[$this->extKey] .= $js;
 	
